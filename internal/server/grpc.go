@@ -1,9 +1,10 @@
 package server
 
 import (
-	v1 "account/api/helloworld/v1"
+	greeterpbv1 "account/api/helloworld/v1"
+	rbacpbv1 "account/api/rbac/v1"
 	"account/internal/conf"
-	"account/internal/service"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
@@ -11,10 +12,13 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+
+	greetersvcv1 "account/internal/service/greeter/v1"
+	rbacsvcv1 "account/internal/service/rbac/v1"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, gv1 *greetersvcv1.GreeterService, rv1 *rbacsvcv1.V1Service, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -34,6 +38,7 @@ func NewGRPCServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	v1.RegisterGreeterServer(srv, greeter)
+	greeterpbv1.RegisterGreeterServer(srv, gv1)
+	rbacpbv1.RegisterV1Server(srv, rv1)
 	return srv
 }

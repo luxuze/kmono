@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package api.rbac;
+
+import "google/api/annotations.proto";
+// import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option go_package           = "account/api/rbac/v1;v1";
+option java_multiple_files  = true;
+option java_package         = "dev.kratos.api.rbac.v1";
+option java_outer_classname = "RBACProtoV1";
+
+service V1 {
+    // Login Account Login
+    rpc Login(LoginRequest) returns (LoginReply) {
+        option (google.api.http) = {
+            post: "/rbac/login"
+            body: "*"
+        };
+    };
+
+    // Me Get User Info
+    rpc Me(MeRequest) returns (MeReply) {
+        option (google.api.http) = {
+            get: "/rbac/me"
+        };
+    };
+}
+
+message LoginRequest {
+    string UserName = 1;
+    string Password = 2;
+}
+message LoginReply {
+    string message = 1;
+}
+
+message MeRequest {}
+message MeReply {
+    string UserName = 1;
+}

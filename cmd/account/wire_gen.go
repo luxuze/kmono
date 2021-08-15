@@ -10,7 +10,8 @@ import (
 	"account/internal/conf"
 	"account/internal/data"
 	"account/internal/server"
-	"account/internal/service"
+	"account/internal/service/greeter/v1"
+	service2 "account/internal/service/rbac/v1"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -26,8 +27,9 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
+	v1Service := service2.NewV1Service()
+	httpServer := server.NewHTTPServer(confServer, greeterService, v1Service, logger)
+	grpcServer := server.NewGRPCServer(confServer, greeterService, v1Service, logger)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
 		cleanup()

@@ -18,7 +18,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type V1Client interface {
+	// Login Account Login
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	// Me Get User Info
 	Me(ctx context.Context, in *MeRequest, opts ...grpc.CallOption) (*MeReply, error)
 }
 
@@ -52,7 +54,9 @@ func (c *v1Client) Me(ctx context.Context, in *MeRequest, opts ...grpc.CallOptio
 // All implementations must embed UnimplementedV1Server
 // for forward compatibility
 type V1Server interface {
+	// Login Account Login
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	// Me Get User Info
 	Me(context.Context, *MeRequest) (*MeReply, error)
 	mustEmbedUnimplementedV1Server()
 }
@@ -133,5 +137,5 @@ var V1_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/rbac/v1/v1.proto",
+	Metadata: "api/rbac/v1/rbac.proto",
 }
